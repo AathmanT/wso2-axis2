@@ -30,7 +30,7 @@ import java.util.concurrent.*;
 /**
  * Worker pool implementation based on java.util.concurrent in JDK 1.5 or later.
  */
-public class NativeWorkerPool implements WorkerPool {
+public class NativeWorkerPool implements WorkerPool,NativeWorkerPoolMBean {
 
     static final Log log = LogFactory.getLog(NativeWorkerPool.class);
 
@@ -188,5 +188,35 @@ public class NativeWorkerPool implements WorkerPool {
     public void shutdown(int timeout) throws InterruptedException {
         executor.shutdown();
         executor.awaitTermination(timeout, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public void setCoreThreadPoolSize(int size) {
+        this.executor.setCorePoolSize(size);
+    }
+
+    @Override
+    public void setMaxThreadPoolSize(int size) {
+        this.executor.setMaximumPoolSize(size);
+    }
+
+    @Override
+    public void setKeepAliveTime(long time) {
+        this.executor.setKeepAliveTime(time,TimeUnit.SECONDS);
+    }
+
+    @Override
+    public int getCoreThreadPoolSize() {
+        return this.executor.getCorePoolSize();
+    }
+
+    @Override
+    public int getMaxThreadPoolSize() {
+        return this.executor.getMaximumPoolSize();
+    }
+
+    @Override
+    public long getKeepAliveTime() {
+        return this.executor.getKeepAliveTime(TimeUnit.SECONDS);
     }
 }
